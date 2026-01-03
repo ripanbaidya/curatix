@@ -1,0 +1,36 @@
+name: curatix
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: curatix-postgres
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=curatix
+      - POSTGRES_PASSWORD=curatix
+      - POSTGRES_DB=curatix
+    ports:
+      - "${DOCKER_POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - curatix-network
+
+  redis:
+    image: redis:alpine
+    container_name: curatix-redis
+    restart: on-failure
+    ports:
+      - "${DOCKER_REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - curatix-network
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  curatix-network:
+    driver: bridge
