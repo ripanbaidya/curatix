@@ -1,14 +1,15 @@
 name: curatix
-version: '3.8'
 services:
+
+  # postgreSql
   postgres:
     image: postgres:16-alpine
     container_name: curatix-postgres
     restart: on-failure
     environment:
-      - POSTGRES_USER=curatix
-      - POSTGRES_PASSWORD=curatix
       - POSTGRES_DB=curatix
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password8080
     ports:
       - "${DOCKER_POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -16,6 +17,7 @@ services:
     networks:
       - curatix-network
 
+  # redis
   redis:
     image: redis:alpine
     container_name: curatix-redis
@@ -27,9 +29,36 @@ services:
     networks:
       - curatix-network
 
+  # elasticsearch
+  elasticsearch:
+    image: elasticsearch:9.2.3
+    container_name: curatix-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - curatix-network
+
+  #zipkin
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: curatix-zipkin
+    restart: unless-stopped
+    ports:
+      - "9411:9411"
+    networks:
+      - curatix-network
+
 volumes:
   postgres-data:
   redis-data:
+  es-data:
 
 networks:
   curatix-network:

@@ -2,6 +2,7 @@
 name: curatix
 version: '3.8'
 services:
+  # PostgreSql
   postgres:
     image: postgres:16-alpine
     container_name: curatix-postgres
@@ -15,6 +16,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  # Redis
   redis:
     image: redis:alpine
     container_name: curatix-redis
