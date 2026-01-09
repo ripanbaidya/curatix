@@ -172,13 +172,21 @@ app:
   copyright: ${APPLICATION_COPYRIGHT:© 2026 Curatix. All rights reserved}
   license:
     name: ${APPLICATION_LICENSE_NAME:MIT}
-    url: ${APPLICATION_LICENSE_URL:https://choosealicense.com/licenses/mit/}
+    url: ${APPLICATION_LICENSE_URL:https://github.com/ripan-baidya/curatix/tree/main?tab=MIT-1-ov-file}
   support:
     email: ${SUPPORT_EMAIL:support@curatix.com}
     working-hours: "${Mon-Fri: 9 AM - 6 PM}"
   socials:
     twitter: ${SOCIAL_TWITTER:https://twitter.com/curatix}
     instagram: ${SOCIAL_INSTAGRAM:https://instagram.com/curatix}
+
+  # API
+  api:
+    servers:
+      dev:
+        - http://localhost:${SERVER_PORT:8080}${SERVER_CONTEXT_PATH:/api/v1}
+      prod:
+        - https://api.curatix.com
 
   # async
   async:
