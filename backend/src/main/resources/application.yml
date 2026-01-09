@@ -1,3 +1,10 @@
+# +++++ Main +++++
+
 spring:
   application:
     name: 'curatix'
+
+  # Profile
+  profiles:
+    active: dev
+    default: dev
