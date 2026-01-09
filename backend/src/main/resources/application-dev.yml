@@ -1,1 +1,257 @@
+# +++++ Development +++++
 
+spring:
+  # Datasource
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:curatix}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:password8080}
+    driver-class-name: org.postgresql.Driver
+
+    # HikariCP Connection Pool
+    hikari:
+      pool-name: CuratixHikariPool
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000} # 30 seconds
+      idle-timeout: ${DB_IDLE_TIMEOUT:600000}   # 10 minutes
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}  # 30 minutes
+      auto-commit: true
+      leak-detection-threshold: 60000 # 1 minute
+
+  # JPA/ Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: ${JPA_SHOW_SQL:true}
+    open-in-view: false # Prevents accidental lazy loading
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: false
+        generate_statistics: false
+        jdbc:
+          batch_size: 20 # Ask driver to send upto 20 DML statements in a batch, Good for bulk insert/update
+          fetch_size: 50 # Ask driver to fetch x number of rows at a time, Good for pagination
+        order_inserts: true
+        order_updates: true
+
+  # Flyway
+  flyway:
+    enabled: ${FLYWAY_ENABLED:false}
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:true} # true, to create a baseline on migrate
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: ${DOCKER_REDIS_PORT:6379}
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          max-wait: 0
+      cache:
+        type: ${CACHE_TYPE:REDIS}
+        redis:
+          time-to-live: ${CACHE_TTL:3600}
+          use-key-prefix: true
+          key-prefix: "curatix::"
+          cache-null-values: false
+          enable-statistics: true
+
+  # Jackson
+  jackson:
+    time-zone: Asia/Kolkata
+    date-format: yyyy-MM-dd HH:mm:ss
+    # Convert camelCase to snake_case
+    property-naming-strategy: SNAKE_CASE
+    write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+  # Servlet
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: ${MAX_FILE_SIZE:5MB}
+      max-request-size: ${MAX_REQUEST_SIZE:10MB}
+      file-size-threshold: ${FILE_SIZE_THRESHOLD:1MB}
+# Server
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/${API_VERSION:v1}
+    session:
+      timeout: 30m
+  compression:
+    enabled: true # Enablish GZIP compression
+  error:
+    # Do not expose internal exception messages
+    include-message: never
+    # Do not expose validation error details
+    # Use "on_param" only for debugging or internal APIs
+    include-binding-errors: never
+    include-stacktrace: never
+  tomcat:
+    # Max time server waits for a client connection (in ms)
+    connection-timeout: 20000 # 20s
+    threads:
+      # Maximum number of request-processing threads
+      # Tune based on CPU cores and expected concurrency
+      max: 200
+      # Minimum number of idle threads always kept alive
+      # Helps handle sudden traffic spikes
+      min-spare: 10
+
+# Logging (Check logback.xml for complete reference)
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.curatix: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:DEBUG}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:TRACE}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
+
+# OpenAPI/ Swagger doc
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:true}
+    path: /api-docs
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    path: /swagger-ui.html
+    # Prevent loading default petstore example
+    disable-swagger-default-url: true
+    # Shows API execution time in the UI
+    display-request-duration: true
+    # Sort APIs by HTTP method (GET, POST, PUT...)
+    operations-sorter: method
+    # Sort tags alphabetically
+    tags-sorter: alpha
+    # Collapse all endpoints by default
+    doc-expansion: none
+    # Expose actuator endpoints in Swagger
+    show-actuator: true
+    default-consumes-media-type: application/json
+    default-produces-media-type: application/json
+
+# Actuator (Health check)
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,prometheus,loggers
+  endpoint:
+    health:
+      # Show overall health status (UP / DOWN)
+      show-details: when_authorized
+      # Show individual health contributors (DB, Redis, Kafka, etc.)
+      show-components: when_authorized
+  # TODO: elasticsearch & Zipkin setup
+  health:
+    elasticsearch:
+      enabled: false
+  tracing:
+    enabled: false
+
+# Resilience4j
+#
+
+# Application
+app:
+  name: ${APPLICATION_NAME:curatix}
+  version: ${APPLICATION_VERSION:1.0.0}
+  build-number: ${APPLICATION_BUILD_NUMBER:1.0.0}
+  copyright: ${APPLICATION_COPYRIGHT:© 2026 Curatix. All rights reserved}
+  license:
+    name: ${APPLICATION_LICENSE_NAME:MIT}
+    url: ${APPLICATION_LICENSE_URL:https://choosealicense.com/licenses/mit/}
+  support:
+    email: ${SUPPORT_EMAIL:support@curatix.com}
+    working-hours: "${Mon-Fri: 9 AM - 6 PM}"
+  socials:
+    twitter: ${SOCIAL_TWITTER:https://twitter.com/curatix}
+    instagram: ${SOCIAL_INSTAGRAM:https://instagram.com/curatix}
+
+  # async
+  async:
+    core-pool-size: 10
+    max-pool-size: 50
+    queue-capacity: 500
+    thread-name-prefix: curatix-async-
+  # CORS(Cross-Origin Resource Sharing)
+  cors:
+    enabled: ${CORS_ENABLED:true}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,PATCH,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    exposed-headers: ${CORS_EXPOSED_HEADERS:Authorization}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: ${CORS_MAX_AGE:3600}
+
+# Security
+security:
+  jwt:
+    issuer: ${JWT_ISSUER:curatix}
+    secret: ${JWT_SECRET:2a083b0e65f2a5390efe9eb1514ab7158361f3895ece94bf8e57c7f60475f1e6}
+    header: Authorization
+    prefix: Bearer
+    access-token:
+      expiration: ${JWT_ACCESS_EXPIRATION:3600000} # 1 hous
+    refresh-token:
+      expiration: ${JWT_REFRESH_EXPIRATION:2592000000} # 30 days
+    password:
+      encoder-strength: ${PASSWORD_ENCODER_STRENGTH:12}
+      max-login-attempts: 5
+      lockout-duration: 15m
+
+# Integrations
+integration:
+  sms:
+    enabled: false
+    provider: twilio
+    base-url:
+    credentials:
+    timeout:
+    retry:
+  # Cloud
+  storage:
+    # Cloudinary(image)
+    cloudinary:
+      enabled: true
+      provider: cloudinary
+      credientials:
+        secure: true
+        cloud-name: ${CLOUDINARY_CLOUD_NAME:dkpchjv9f}
+        api-key: ${CLOUDINARY_API_KEY:259858527764962}
+        api-secret: ${CLOUDINARY_API_SECRET:x-u3hSMS7Sdgh4zLMeq5Nv1tNPc}
+      upload:
+        folder: ${CLOUDINARY_UPLOAD_FOLDER:curatix}
+        max-file-size: 5MB
+        allowed-formats: jpg, jpeg, png, webp
+        transformation:
+          width: 1024
+          height: 1024
+          crop: "limit"
+          quality: "auto:good"
+          format: "webp"
+    aws:
+      enabled: false
+      prvider: aws
+
+# Feature
+feature:
+  auth:
+    social-login: false
+  notifications:
+    email: true
+    sms: false
+  analytics:
+    enabled: false
