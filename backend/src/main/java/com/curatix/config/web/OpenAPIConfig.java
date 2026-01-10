@@ -28,12 +28,19 @@ public class OpenAPIConfig {
     private final ApplicationProperties applicationProperties;
     private final ApplicationAPIProperties apiProperties;
 
+
+    /**
+     * OpenAPI configuration for non-production environment
+     */
     @Bean
     @Profile("!prod")
     public OpenAPI nonProductionOpenAPI() {
         return createOpenAPI(getDevelopmentServers(apiProperties.servers().dev()));
     }
 
+    /**
+     * OpenAPI configuration for production environment
+     */
     @Bean
     @Profile("prod")
     public OpenAPI productionOpenAPI() {
@@ -78,7 +85,7 @@ public class OpenAPIConfig {
      */
     private List<Server> getDevelopmentServers(List<String> urls) {
         return urls.stream()
-                .map(url -> new Server().url(url).description("Development Url"))
+                .map(url -> new Server().url(url).description("Development Environment"))
                 .toList();
     }
 
@@ -87,7 +94,7 @@ public class OpenAPIConfig {
      */
     private List<Server> getProductionServers(List<String> urls) {
         return urls.stream()
-                .map(url -> new Server().url(url).description("Production Url"))
+                .map(url -> new Server().url(url).description("Production Environment"))
                 .toList();
     }
 }
