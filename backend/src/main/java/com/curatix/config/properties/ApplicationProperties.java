@@ -9,11 +9,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record ApplicationProperties(
         String name,
         String version,
+        String logo,
         String buildNumber,
         String copyright,
         License license,
         Support support,
-        Socials socials
+        Socials socials,
+        Developer developer
 ) {
 
     /**
@@ -38,8 +40,18 @@ public record ApplicationProperties(
      * Social links
      */
     public record Socials(
+            String github,
             String twitter,
             String instagram
+    ) {
+    }
+
+    /**
+     * Developer
+     */
+    public record Developer(
+            String name,
+            String email
     ) {
     }
 }
