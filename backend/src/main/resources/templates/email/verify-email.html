@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Verify Email</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        img {
+            border: 0;
+            outline: none;
+            text-decoration: none;
+            display: block;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0c0cbd;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        .heading {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        .text strong {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #2f69ec;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 16px 48px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 4px rgba(47, 105, 236, 0.2);
+        }
+
+        .button:hover {
+            background-color: #2557d6;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 32px 0;
+        }
+
+        .hint {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .link-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 13px;
+            color: #4b5563;
+            word-break: break-all;
+            margin-bottom: 24px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .signature {
+            margin-top: 32px;
+            font-size: 16px;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            color: #9ca3af;
+            margin-top: 32px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            margin-top: 16px;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .footer-links a:hover {
+            color: #2f69ec;
+            text-decoration: underline;
+        }
+
+        .security-notice {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            margin-top: 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        /* Mobile responsiveness */
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 20px 10px;
+            }
+
+            .card {
+                padding: 24px;
+                border-radius: 8px;
+            }
+
+            .logo {
+                font-size: 24px;
+                margin-bottom: 24px;
+            }
+
+            .heading {
+                font-size: 20px;
+            }
+
+            .text {
+                font-size: 15px;
+            }
+
+            .button {
+                padding: 14px 32px;
+                font-size: 15px;
+            }
+
+            .button-container {
+                margin: 24px 0;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .card {
+                background-color: #ffffff;
+            }
+
+            .text, .hint, .link-box, .signature {
+                color: #374151;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+        <!-- Logo -->
+        <div class="logo">Curatix</div>
+
+        <!-- Heading -->
+        <h1 class="heading" th:text="${title}">Verify your email</h1>
+
+        <!-- Greeting -->
+        <p class="text">Hey <strong th:text="${name}">Ripan Baidya</strong>,</p>
+
+        <!-- Main message -->
+        <p class="text" th:text="${message}">
+            Thanks for joining Curatix! We just need one more thing from you — a quick confirmation of your email
+            address and you'll be all set. Click the button below to get started:
+        </p>
+
+        <!-- CTA Button -->
+        <div class="button-container">
+            <a th:href="${actionLink}" class="button" style="color: #ffffff;">Verify Email Address</a>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Alternative link section -->
+        <p class="hint">
+            If the button above doesn't work, copy and paste the following link into your browser:
+        </p>
+
+        <div class="link-box" th:text="${actionLink}">
+            https://example.com/verify?token=abc123xyz456def789ghi012jkl345mno678pqr901stu234
+        </div>
+
+        <!-- Security notice -->
+        <div class="security-notice">
+            <strong>🔒 Security tip:</strong> This link will expire in <span th:text="${expiryText}">1 Hours.</span> If
+            you didn't request this email, you can safely ignore it.
+        </div>
+
+        <!-- Signature -->
+        <div class="signature">
+            Cheers,<br>
+            <span class="team-name">The Curatix Team 🚀 </span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © <span th:text="${year}">2026</span> Curatix. All rights reserved.
+    </div>
+</div>
+</body>
+</html>
