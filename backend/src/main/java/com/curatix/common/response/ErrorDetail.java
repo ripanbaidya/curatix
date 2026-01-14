@@ -12,6 +12,7 @@ import java.util.List;
  * <p>Follows {@code RFC 7807} Problem Details for HTTP APIs (simplified).
  *
  * @param type           Error category/type (e.g., VALIDATION_ERROR)
+ * @param code           Specific error code(e.g., USER.NOT_FOUND, AUTH.INVALID_TOKEN)
  * @param title          Human-readable error title
  * @param status         HTTP status code
  * @param detail         Specific error message with context
@@ -25,6 +26,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ErrorDetail(
         String type,
+        String code,
         String title,
         int status,
         String detail,
@@ -41,6 +43,7 @@ public record ErrorDetail(
      */
     public static class Builder {
         private ErrorType errorType;
+        private String code;
         private String detail;
         private String path;
         private List<FieldError> errors;
@@ -50,6 +53,11 @@ public record ErrorDetail(
 
         public Builder type(ErrorType errorType) {
             this.errorType = errorType;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
             return this;
         }
 
@@ -85,7 +93,8 @@ public record ErrorDetail(
 
         public ErrorDetail build() {
             return new ErrorDetail(
-                    errorType.name(),
+                    errorType.toString(),
+                    code,
                     errorType.getTitle(),
                     errorType.getStatusCode(),
                     detail,
