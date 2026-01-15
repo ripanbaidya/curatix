@@ -21,8 +21,6 @@ logs/
 !.env.example
 
 # Secrets/ Keys
-**/secrets/
-**/*secret*
 **/*credentials*
 *.pem
 *.key
