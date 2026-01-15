@@ -6,7 +6,7 @@ import com.curatix.common.constant.ErrorCode;
  * Exception for authentication failures, Use for {@code 401}
  * errors (login failures, invalid tokens, etc.)
  */
-class AuthenticationException extends CuratixException {
+public class AuthenticationException extends CuratixException {
 
     public AuthenticationException(ErrorCode errorCode) {
         super(errorCode);
