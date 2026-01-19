@@ -13,9 +13,9 @@ import java.util.Map;
  * Utility class for building standardized API responses.
  * Simplifies response creation in controllers.
  */
-public final class ApiResponseUtil {
+public final class ResponseUtil {
 
-    private ApiResponseUtil() {
+    private ResponseUtil() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated.");
     }
 
