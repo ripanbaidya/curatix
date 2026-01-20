@@ -24,6 +24,7 @@ public final class KeyUtils {
     private static final String PUBLIC_KEY_FOOTER = "-----END PUBLIC KEY-----";
     private static final String KEY_ALGORITHM = "RSA";
 
+    // Prevent instantiation
     private KeyUtils() {
     }
 
