@@ -1,7 +1,8 @@
 # +++++ Development +++++
 
 spring:
-
+  config:
+    import: optional:file:.env[.properties]
   # Datasource
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:curatix}
@@ -220,7 +221,10 @@ app:
 security:
   jwt:
     issuer: ${JWT_ISSUER:curatix}
-    secret: ${JWT_SECRET:2a083b0e65f2a5390efe9eb1514ab7158361f3895ece94bf8e57c7f60475f1e6}
+    # NOTE: Uncomment and update JwtService if you do not want to use asymmetric encryption.
+    # Since the application has migrated to asymmetric encryption (RSA), the symmetric secret
+    # key is no longer used.
+    # secret: ${JWT_SECRET:2a083b0e65f2a5390efe9eb1514ab7158361f3895ece94bf8e57c7f60475f1e6}
     header: Authorization
     prefix: Bearer
     access-token:
@@ -231,6 +235,14 @@ security:
       encoder-strength: ${PASSWORD_ENCODER_STRENGTH:12}
       max-login-attempts: 5
       lockout-duration: 15m
+    # Asymmetric encryption (RSA)
+    # Migration from symmetric to asymmetric encryption
+    rsa:
+      algorithm: ${RSA_ALGORITHM:SHA256withRSA}
+      key-size: ${RSA_KEY_SIZE:2048}
+      private-key-path: ${RSA_PRIVATE_KEY_PATH:classpath:keys/local/private_key.pem}
+      public-key-path: ${RSA_PUBLIC_KEY_PATH:classpath:keys/local/public_key.pem}
+
 
 # Integrations
 integration:
