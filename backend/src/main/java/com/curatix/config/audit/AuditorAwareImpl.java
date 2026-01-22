@@ -6,14 +6,20 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-public class ApplicationAuditorAware implements AuditorAware<@NonNull String> {
+/**
+ * We will use the user Email as the auditor identifier.
+ */
+@Component("auditorAware")
+public class AuditorAwareImpl implements AuditorAware<@NonNull String> {
 
     @Override
     public @NonNull Optional<String> getCurrentAuditor() {
-        final Authentication authentication = SecurityContextHolder.getContext()
+        final Authentication authentication = SecurityContextHolder
+                .getContext()
                 .getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() ||
                 authentication instanceof AnonymousAuthenticationToken
@@ -21,8 +27,11 @@ public class ApplicationAuditorAware implements AuditorAware<@NonNull String> {
             return Optional.empty();
         }
 
-        final User user = (User) authentication.getPrincipal();
-        return Optional.ofNullable(user.getId());
-    }
+        Object principle = authentication.getPrincipal();
+        if (principle instanceof User user) {
+            return Optional.ofNullable(user.getEmail());
+        }
 
+        return Optional.of("SYSTEM");
+    }
 }
